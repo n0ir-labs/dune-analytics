@@ -5,8 +5,8 @@
 
 WITH deposits AS (
     SELECT
-        DATE_TRUNC('day', evt_block_time) AS date,
-        SUM(CAST(json_extract_scalar(data, '$.usdcInvested') AS DOUBLE) / 1e6) AS deposits_usdc
+        DATE_TRUNC('day', block_time) AS date,
+        SUM(bytea2numeric(substring(data, 129, 32)) / 1e6) AS deposits_usdc
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
       AND topic0 = 0x9d8c09d6a3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8  -- PositionCreated event signature
@@ -14,8 +14,8 @@ WITH deposits AS (
 ),
 withdrawals AS (
     SELECT
-        DATE_TRUNC('day', evt_block_time) AS date,
-        SUM(CAST(json_extract_scalar(data, '$.usdcReturned') AS DOUBLE) / 1e6) AS withdrawals_usdc
+        DATE_TRUNC('day', block_time) AS date,
+        SUM(bytea2numeric(substring(data, 33, 32)) / 1e6) AS withdrawals_usdc
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
       AND topic0 = 0x7d8c09d6a3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8  -- PositionClosed event signature

@@ -5,8 +5,8 @@
 
 WITH daily_data AS (
     SELECT
-        DATE_TRUNC('day', evt_block_time) AS date,
-        CAST(bytea2numeric(substring(data, 129, 32)) AS DOUBLE) / 1e6 AS usdc_amount,
+        DATE_TRUNC('day', block_time) AS date,
+        bytea2numeric(substring(data, 129, 32)) / 1e6 AS usdc_amount,
         '0x' || encode(substring(topic1, 13, 20), 'hex') AS user_address
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540

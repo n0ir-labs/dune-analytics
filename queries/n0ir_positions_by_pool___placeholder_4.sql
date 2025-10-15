@@ -6,7 +6,7 @@
 WITH position_data AS (
     SELECT
         '0x' || encode(substring(topic3, 13, 20), 'hex') AS pool_address,
-        CAST(bytea2numeric(substring(data, 129, 32)) AS DOUBLE) / 1e6 AS usdc_invested
+        bytea2numeric(substring(data, 129, 32)) / 1e6 AS usdc_invested
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
       AND topic0 = 0x9d8c09d6a3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8  -- PositionCreated
