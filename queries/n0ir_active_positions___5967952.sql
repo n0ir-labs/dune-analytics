@@ -5,22 +5,22 @@
 
 WITH created AS (
     SELECT
-        bytea2numeric(topic2) AS token_id,
+        bytearray_to_uint256(topic2) AS token_id,
         block_time AS created_at,
-        '0x' || encode(substring(topic1, 13, 20), 'hex') AS user_address,
-        '0x' || encode(substring(topic3, 13, 20), 'hex') AS pool_address,
-        bytea2numeric(substring(data, 129, 32)) / 1e6 AS usdc_invested
+        bytearray_substring(topic1, 13, 20) AS user_address,
+        bytearray_substring(topic3, 13, 20) AS pool_address,
+        bytearray_to_uint256(bytearray_substring(data, 129, 32)) / 1e6 AS usdc_invested
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
-      AND topic0 = 0x9d8c09d6a3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8  -- PositionCreated
+      AND topic0 = 0x22c1b606e32c54081d4813a6daf0b6ab4522b84a2829c0dfa181ac6f12c62b7c  -- PositionCreated
 ),
 closed AS (
     SELECT
-        bytea2numeric(topic2) AS token_id,
+        bytearray_to_uint256(topic2) AS token_id,
         block_time AS closed_at
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
-      AND topic0 = 0x7d8c09d6a3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8  -- PositionClosed
+      AND topic0 = 0xfc4e6ac706594637404ad0c7694a5353537a522cc0cf04a16ca51a228b0f2bd4  -- PositionClosed
 )
 SELECT
     COUNT(*) AS total_created,

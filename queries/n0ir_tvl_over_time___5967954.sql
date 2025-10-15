@@ -6,19 +6,19 @@
 WITH deposits AS (
     SELECT
         DATE_TRUNC('day', block_time) AS date,
-        SUM(bytea2numeric(substring(data, 129, 32)) / 1e6) AS deposits_usdc
+        SUM(bytearray_to_uint256(bytearray_substring(data, 129, 32)) / 1e6) AS deposits_usdc
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
-      AND topic0 = 0x9d8c09d6a3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8  -- PositionCreated event signature
+      AND topic0 = 0x22c1b606e32c54081d4813a6daf0b6ab4522b84a2829c0dfa181ac6f12c62b7c  -- PositionCreated
     GROUP BY 1
 ),
 withdrawals AS (
     SELECT
         DATE_TRUNC('day', block_time) AS date,
-        SUM(bytea2numeric(substring(data, 33, 32)) / 1e6) AS withdrawals_usdc
+        SUM(bytearray_to_uint256(bytearray_substring(data, 1, 32)) / 1e6) AS withdrawals_usdc
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
-      AND topic0 = 0x7d8c09d6a3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8b3c6b0c8  -- PositionClosed event signature
+      AND topic0 = 0xfc4e6ac706594637404ad0c7694a5353537a522cc0cf04a16ca51a228b0f2bd4  -- PositionClosed
     GROUP BY 1
 )
 SELECT
