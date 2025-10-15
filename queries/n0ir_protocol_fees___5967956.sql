@@ -3,13 +3,16 @@
 -- query link: https://dune.com/queries/placeholder_3
 
 
+-- Track USDC transfers to protocol treasury from LiquidityManager
+-- Transfer(address indexed from, address indexed to, uint256 value)
 SELECT
     DATE_TRUNC('day', block_time) AS date,
-    SUM(value / 1e6) AS fees_collected_usdc,
+    SUM(bytearray_to_uint256(data) / 1e6) AS fees_collected_usdc,
     COUNT(*) AS fee_transaction_count
-FROM base.transactions
-WHERE to = 0xEC5E6F3bBCBFfA2a758A76Bc4fd6a504FD3E7262  -- PROTOCOL_TREASURY
-  AND "from" = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540  -- LiquidityManager Proxy
-  AND value > 0
+FROM base.logs
+WHERE contract_address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913  -- USDC
+  AND topic0 = 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef  -- Transfer event
+  AND bytearray_substring(topic1, 13, 20) = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540  -- from LiquidityManager
+  AND bytearray_substring(topic2, 13, 20) = 0xEC5E6F3bBCBFfA2a758A76Bc4fd6a504FD3E7262  -- to PROTOCOL_TREASURY
 GROUP BY 1
 ORDER BY 1 DESC

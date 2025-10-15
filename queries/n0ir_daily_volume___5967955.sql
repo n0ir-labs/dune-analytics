@@ -6,7 +6,7 @@
 WITH daily_data AS (
     SELECT
         DATE_TRUNC('day', block_time) AS date,
-        bytearray_to_uint256(bytearray_substring(data, 129, 32)) / 1e6 AS usdc_amount,
+        bytearray_to_uint256(bytearray_substring(data, 33, 32)) / 1e6 AS usdc_amount,
         bytearray_substring(topic1, 13, 20) AS user_address
     FROM base.logs
     WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
