@@ -21,11 +21,18 @@ WITH aero_transfers AS (
           0x0ee44295f4335256D2cE1123E5Bc277Fa36aB140   -- Old contract
       )
 )
+WITH daily_rewards AS (
+    SELECT
+        DATE_TRUNC('day', block_time) AS date,
+        SUM(aero_amount) AS daily_aero_rewards,
+        COUNT(*) AS reward_claim_count
+    FROM aero_transfers
+    GROUP BY 1
+)
 SELECT
-    DATE_TRUNC('day', block_time) AS date,
-    SUM(aero_amount) AS daily_aero_rewards,
-    COUNT(*) AS reward_claim_count,
-    SUM(SUM(aero_amount)) OVER (ORDER BY DATE_TRUNC('day', block_time)) AS cumulative_aero_rewards
-FROM aero_transfers
-GROUP BY 1
-ORDER BY 1 DESC
+    date,
+    daily_aero_rewards,
+    reward_claim_count,
+    SUM(daily_aero_rewards) OVER (ORDER BY date) AS cumulative_aero_rewards
+FROM daily_rewards
+ORDER BY date DESC
