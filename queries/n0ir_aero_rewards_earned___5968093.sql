@@ -16,7 +16,10 @@ WITH aero_transfers AS (
     WHERE contract_address = 0x940181a94A35A4569E4529A3CDfB74e38FD98631  -- AERO token
       AND topic0 = 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef  -- Transfer event
       -- AERO sent TO the LiquidityManager (rewards claimed from gauges)
-      AND bytearray_substring(topic2, 13, 20) = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
+      AND bytearray_substring(topic2, 13, 20) IN (
+          0x7c4b58b87D72A2F44baAf9A08F333BE562595540,  -- Current proxy
+          0x0ee44295f4335256D2cE1123E5Bc277Fa36aB140   -- Old contract
+      )
 )
 SELECT
     DATE_TRUNC('day', block_time) AS date,

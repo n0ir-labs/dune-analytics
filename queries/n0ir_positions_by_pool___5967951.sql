@@ -8,7 +8,10 @@ WITH position_data AS (
         bytearray_substring(topic3, 13, 20) AS pool_address,
         bytearray_to_uint256(bytearray_substring(data, 33, 32)) / 1e6 AS usdc_invested
     FROM base.logs
-    WHERE contract_address = 0x7c4b58b87D72A2F44baAf9A08F333BE562595540
+    WHERE contract_address IN (
+        0x7c4b58b87D72A2F44baAf9A08F333BE562595540,  -- Current proxy
+        0x0ee44295f4335256D2cE1123E5Bc277Fa36aB140   -- Old contract
+    )
       AND topic0 = 0x22c1b606e32c54081d4813a6daf0b6ab4522b84a2829c0dfa181ac6f12c62b7c  -- PositionCreated
 )
 SELECT
